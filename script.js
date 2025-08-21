@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const targetId = link.getAttribute('href').slice(1);
             const targetSection = document.getElementById(targetId);
-            const offset = targetSection.offsetTop - 70; // adjust for navbar height
+            const offset = targetSection.offsetTop - 70;
 
             window.scrollTo({
                 top: offset,
@@ -17,9 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Highlight active link on scroll
-    window.addEventListener('scroll', () => {
-        let scrollPos = window.scrollY + 80; // offset for navbar
+    const highlightActive = () => {
+        let scrollPos = window.scrollY + 80;
 
         sections.forEach(section => {
             const top = section.offsetTop;
@@ -35,5 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    });
+    };
+    
+    highlightActive();
+    window.addEventListener('scroll', highlightActive);
 });
