@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const footer = document.querySelector('footer');
     let isScrolling = false;
     let currentIndex = 0;
-    const scrollDelay = 300; // ms delay before next scroll
+    const scrollDelay = 300;
 
-    function smoothScrollTo(targetY, callback) {
+    function smoothScrollTo(targetY) {
         let startY = window.scrollY;
         let distance = targetY - startY;
         let duration = 600;
@@ -26,70 +26,87 @@ document.addEventListener('DOMContentLoaded', () => {
             if (timeElapsed < duration) {
                 requestAnimationFrame(animation);
             } else {
-                setTimeout(() => { isScrolling = false; }, scrollDelay); // delay before next scroll
-                if (callback) callback();
+                setTimeout(() => { isScrolling = false; }, scrollDelay);
+                checkFooter();
             }
         }
 
         requestAnimationFrame(animation);
     }
 
-    function scrollToSection(index) {
-        if (index < 0) index = 0;
-        if (index >= sections.length) index = sections.length - 1;
-        if (isScrolling || index === currentIndex) return;
-
+    function scrollToSection(index, trigger = 'manual') {
+        if (index < 0 || index >= sections.length || isScrolling) return;
         isScrolling = true;
         currentIndex = index;
-        smoothScrollTo(sections[index].offsetTop, checkFooter);
+        console.log(`scrollToSection called by: ${trigger}, section index: ${index}`);
+        smoothScrollTo(sections[index].offsetTop);
     }
 
     function checkFooter() {
         const lastSection = sections[sections.length - 1];
         const scrollBottom = window.scrollY + window.innerHeight;
-
         if (scrollBottom >= lastSection.offsetTop + 50) {
-            footer.classList.add('show');
+            footer.classList.add('show'); // slide up
         } else {
-            footer.classList.remove('show');
+            footer.classList.remove('show'); // hide
         }
     }
 
-    // Wheel scroll (desktop)
-    window.addEventListener('wheel', (e) => {
+    window.addEventListener('wheel', e => {
         e.preventDefault();
         if (isScrolling) return;
-        if (e.deltaY > 0) scrollToSection(currentIndex + 1);
-        else scrollToSection(currentIndex - 1);
+        scrollToSection(e.deltaY > 0 ? currentIndex + 1 : currentIndex - 1, 'wheel');
     }, { passive: false });
 
-    // Touch scroll (mobile)
     let touchStartY = 0;
     window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
     window.addEventListener('touchend', e => {
-        const touchEndY = e.changedTouches[0].clientY;
-        const delta = touchStartY - touchEndY;
+        e.preventDefault();
+        if (isScrolling) return;
+        const delta = touchStartY - e.changedTouches[0].clientY;
         if (Math.abs(delta) > 50) {
-            if (delta > 0) scrollToSection(currentIndex + 1);
-            else scrollToSection(currentIndex - 1);
+            scrollToSection(delta > 0 ? currentIndex + 1 : currentIndex - 1, 'touch');
+        }
+    }, { passive: false });
+
+    window.addEventListener('keydown', e => {
+        if (isScrolling) return;
+        switch (e.key) {
+            case 'ArrowDown':
+            case 'PageDown':
+            case ' ':
+                e.preventDefault();
+                scrollToSection(currentIndex + 1, 'keyboard');
+                break;
+            case 'ArrowUp':
+            case 'PageUp':
+                e.preventDefault();
+                scrollToSection(currentIndex - 1, 'keyboard');
+                break;
+            case 'Home':
+                e.preventDefault();
+                scrollToSection(0, 'keyboard');
+                break;
+            case 'End':
+                e.preventDefault();
+                scrollToSection(sections.length - 1, 'keyboard');
+                break;
         }
     });
 
-    // Click smooth scroll
     navLinks.forEach(link => {
         link.addEventListener('click', e => {
             const href = link.getAttribute('href');
             if (href.startsWith('#')) {
                 e.preventDefault();
-                const target = document.getElementById(href.slice(1));
-                if (target) scrollToSection(Array.from(sections).indexOf(target));
+                const targetIndex = Array.from(sections).findIndex(s => s.id === href.slice(1));
+                scrollToSection(targetIndex, 'click');
             }
         });
     });
 
-    // Highlight active link
-    const highlightActive = () => {
-        let scrollPos = window.scrollY + 10;
+    function highlightActive() {
+        const scrollPos = window.scrollY + 10;
         sections.forEach((section, i) => {
             const top = section.offsetTop;
             const bottom = top + section.offsetHeight;
@@ -102,17 +119,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         checkFooter();
-    };
+    }
 
     highlightActive();
     window.addEventListener('scroll', highlightActive);
     window.addEventListener('resize', checkFooter);
 
-    // Burger menu
     document.getElementById("burger").addEventListener("click", () => {
         document.getElementById("nav-links").classList.toggle("active");
     });
 
-    // Initial footer check
+    ['scroll', 'touchmove', 'wheel'].forEach(ev => {
+        window.addEventListener(ev, e => e.preventDefault(), { passive: false });
+    });
+    window.addEventListener('keydown', e => {
+        const keysToPrevent = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+        if (keysToPrevent.includes(e.key)) e.preventDefault();
+    });
+
     checkFooter();
 });
