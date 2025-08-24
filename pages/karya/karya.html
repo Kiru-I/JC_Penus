@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Karya Anime – Galeri</title>
+  <meta name="description" content="Koleksi karya menggambar karakter bergaya anime oleh komunitas kami." />
+    <link rel="stylesheet" href="karya.css" />
+</head>
+<body>
+    <div class="fullpage">
+  <div class="container">
+<header>
+  <div class="title-wrap">
+    <a href="/index.html" class="logo-link" aria-label="Kembali ke beranda">
+      <img src="/img/logo.png" alt="My Logo">
+      <span>Beranda</span>
+    </a>
+    <div>
+      <h1>Galeri Karya</h1>
+      <div class="subtitle">Kumpulan karya anggota Japanese Club Penus</div>
+    </div>
+  </div>
+</header>
+
+    
+    <section class="grid" id="gallery" aria-live="polite">
+      <!-- Contoh item galeri (ganti src ke file Anda di folder images/) -->
+      <article class="card" data-tags="shounen fantasy" data-title="Blade Runner" data-date="2025-08-20" data-artist="Aira">
+        <img loading="lazy" class="thumb" src="/img/1.jpeg" alt="Ilustrasi karakter pahlawan dengan pedang energi" />
+        <div class="card-body">
+          <h3 style="margin:0">Blade Runner</h3>
+          <small class="muted">oleh Aira • 20 Agustus 2025</small>
+          <div class="meta">
+            <span class="tag">Shounen</span>
+            <span class="tag">Fantasy</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="/img/1.jpeg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+      <article class="card" data-tags="chibi shojo" data-title="Candy Pop" data-date="2025-08-12" data-artist="Ren">
+        <img loading="lazy" class="thumb" src="images/work-02.jpg" alt="Karakter chibi lucu dengan permen warna-warni" />
+        <div class="card-body">
+          <h3 style="margin:0">Candy Pop</h3>
+          <small class="muted">oleh Ren • 12 Agustus 2025</small>
+          <div class="meta">
+            <span class="tag">Chibi</span>
+            <span class="tag">Shōjo</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="images/work-02.jpg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+      <article class="card" data-tags="mecha shounen" data-title="Steel Guardian" data-date="2025-07-30" data-artist="Hana">
+        <img loading="lazy" class="thumb" src="images/work-03.jpg" alt="Robot mecha raksasa melindungi kota" />
+        <div class="card-body">
+          <h3 style="margin:0">Steel Guardian</h3>
+          <small class="muted">oleh Hana • 30 Juli 2025</small>
+          <div class="meta">
+            <span class="tag">Mecha</span>
+            <span class="tag">Shounen</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="images/work-03.jpg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+      <article class="card" data-tags="shojo fantasy" data-title="Moonlight Garden" data-date="2025-07-18" data-artist="Kazu">
+        <img loading="lazy" class="thumb" src="images/work-04.jpg" alt="Gadis sihir di taman remang bercahaya" />
+        <div class="card-body">
+          <h3 style="margin:0">Moonlight Garden</h3>
+          <small class="muted">oleh Kazu • 18 Juli 2025</small>
+          <div class="meta">
+            <span class="tag">Shōjo</span>
+            <span class="tag">Fantasy</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="images/work-04.jpg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+      <article class="card" data-tags="chibi" data-title="Mini Adventurer" data-date="2025-06-28" data-artist="Nico">
+        <img loading="lazy" class="thumb" src="images/work-05.jpg" alt="Petualang chibi membawa ransel besar" />
+        <div class="card-body">
+          <h3 style="margin:0">Mini Adventurer</h3>
+          <small class="muted">oleh Nico • 28 Juni 2025</small>
+          <div class="meta">
+            <span class="tag">Chibi</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="images/work-05.jpg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+      <article class="card" data-tags="mecha fantasy" data-title="Skyline Drifter" data-date="2025-06-10" data-artist="Mika">
+        <img loading="lazy" class="thumb" src="images/work-06.jpg" alt="Pesawat mecha melayang di atas kota futuristik" />
+        <div class="card-body">
+          <h3 style="margin:0">Skyline Drifter</h3>
+          <small class="muted">oleh Mika • 10 Juni 2025</small>
+          <div class="meta">
+            <span class="tag">Mecha</span>
+            <span class="tag">Fantasy</span>
+          </div>
+          <a class="pill-link" href="#" data-preview="images/work-06.jpg">Lihat besar ↗</a>
+        </div>
+      </article>
+
+    </section>
+
+    <footer>
+      © <span id="year"></span> Japanese Club Penus. Semua karya milik kreator masing-masing.
+    </footer>
+  </div>
+
+  <dialog id="lightbox" class="viewer">
+    <img id="lightbox-img" src="" alt="Preview karya besar" />
+    <button class="close" aria-label="Tutup">✕</button>
+  </dialog>
+</div> 
+
+<script src="karya.js"></script>
+</body>
+</html>
