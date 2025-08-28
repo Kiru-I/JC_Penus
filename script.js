@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index < 0 || index >= sections.length || isScrolling) return;
         isScrolling = true;
         currentIndex = index;
-        console.log(`scrollToSection called by: ${trigger}, section index: ${index}`);
         smoothScrollTo(sections[index].offsetTop);
     }
 
@@ -52,35 +51,80 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.addEventListener('wheel', e => {
-        e.preventDefault();
-        if (isScrolling) return;
-        scrollToSection(e.deltaY > 0 ? currentIndex + 1 : currentIndex - 1, 'wheel');
-    }, { passive: false });
+    const activitiesIndex = Array.from(sections).findIndex(s => s.id === 'activities');
+    const activities = sections[activitiesIndex];
 
-    let touchStartY = 0;
-    window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
-    window.addEventListener('touchend', e => {
-        e.preventDefault();
-        if (isScrolling) return;
-        const delta = touchStartY - e.changedTouches[0].clientY;
-        if (Math.abs(delta) > 50) {
-            scrollToSection(delta > 0 ? currentIndex + 1 : currentIndex - 1, 'touch');
+    // Wheel scroll
+    window.addEventListener('wheel', e => {
+        const scrollY = window.scrollY;
+        const windowBottom = scrollY + window.innerHeight;
+        const activitiesTop = activities.offsetTop;
+        const activitiesBottom = activitiesTop + activities.offsetHeight;
+
+        if (currentIndex === activitiesIndex) {
+            // At bottom – scroll to next section
+            if (e.deltaY > 0 && windowBottom >= activitiesBottom - 5) {
+                e.preventDefault();
+                scrollToSection(currentIndex + 1, 'wheel');
+            }
+            // At top – scroll to previous section
+            else if (e.deltaY < 0 && scrollY <= activitiesTop + 5) {
+                e.preventDefault();
+                scrollToSection(currentIndex - 1, 'wheel');
+            }
+            // Inside section – allow normal scrolling
+        } else {
+            e.preventDefault();
+            scrollToSection(e.deltaY > 0 ? currentIndex + 1 : currentIndex - 1, 'wheel');
         }
     }, { passive: false });
 
+    // Touch scroll
+    let touchStartY = 0;
+    window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+    window.addEventListener('touchend', e => {
+        const delta = touchStartY - e.changedTouches[0].clientY;
+        const scrollY = window.scrollY;
+        const windowBottom = scrollY + window.innerHeight;
+        const activitiesTop = activities.offsetTop;
+        const activitiesBottom = activitiesTop + activities.offsetHeight;
+
+        if (currentIndex === activitiesIndex) {
+            if (delta > 0 && windowBottom >= activitiesBottom - 5) {
+                e.preventDefault();
+                scrollToSection(currentIndex + 1, 'touch');
+            } else if (delta < 0 && scrollY <= activitiesTop + 5) {
+                e.preventDefault();
+                scrollToSection(currentIndex - 1, 'touch');
+            }
+        } else {
+            if (Math.abs(delta) > 50) {
+                e.preventDefault();
+                scrollToSection(delta > 0 ? currentIndex + 1 : currentIndex - 1, 'touch');
+            }
+        }
+    }, { passive: false });
+
+    // Keyboard navigation
     window.addEventListener('keydown', e => {
         if (isScrolling) return;
+        const scrollY = window.scrollY;
+        const windowBottom = scrollY + window.innerHeight;
+        const activitiesTop = activities.offsetTop;
+        const activitiesBottom = activitiesTop + activities.offsetHeight;
+
         switch (e.key) {
             case 'ArrowDown':
             case 'PageDown':
             case ' ':
                 e.preventDefault();
+                if (currentIndex === activitiesIndex && windowBottom < activitiesBottom - 5) return; // inside activities
                 scrollToSection(currentIndex + 1, 'keyboard');
                 break;
             case 'ArrowUp':
             case 'PageUp':
                 e.preventDefault();
+                if (currentIndex === activitiesIndex && scrollY > activitiesTop + 5) return; // inside activities
                 scrollToSection(currentIndex - 1, 'keyboard');
                 break;
             case 'Home':
@@ -94,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Navbar links
     navLinks.forEach(link => {
         link.addEventListener('click', e => {
             const href = link.getAttribute('href');
@@ -125,16 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', highlightActive);
     window.addEventListener('resize', checkFooter);
 
+    // Burger menu
     document.getElementById("burger").addEventListener("click", () => {
         document.getElementById("nav-links").classList.toggle("active");
-    });
-
-    ['scroll', 'touchmove', 'wheel'].forEach(ev => {
-        window.addEventListener(ev, e => e.preventDefault(), { passive: false });
-    });
-    window.addEventListener('keydown', e => {
-        const keysToPrevent = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
-        if (keysToPrevent.includes(e.key)) e.preventDefault();
     });
 
     checkFooter();
